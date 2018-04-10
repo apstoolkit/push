@@ -1,0 +1,7 @@
+coverage.html
+coverage.out
+bin
+.idea
+# Serverless directories
+.serverless
+.ipynb_checkpoints/
