@@ -10,6 +10,12 @@ provider:
     throttle:
       burstLimit: 20
       rateLimit: 10
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - sns:Publish
+      Resource: "*"
+
 #  iamRoleStatements:
 #    - Effect: Allow
 #      Action:
@@ -90,6 +96,7 @@ functions:
 #            resultTtlInSeconds: 300
 #            identitySource: method.request.header.Authorization
 #            type: token
+
 
 
 #    The following are a few example events you can configure
