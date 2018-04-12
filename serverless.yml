@@ -104,7 +104,7 @@ functions:
           method: post
           private: true
       - http:
-          path: push/api/v1/regsender
+          path: push/api/v1/regaddress
           method: post
           private: true
 #          authorizer:
