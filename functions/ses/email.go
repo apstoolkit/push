@@ -2,19 +2,40 @@ package main
 
 import (
 	"fmt"
-	"github.com/aws/aws-sdk-go/service/sns"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/d-smith/push/awsctx"
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
+	"github.com/aws/aws-sdk-go/service/ses"
+	"encoding/json"
+	"github.com/aws/aws-sdk-go/aws"
 )
 
 type RegisterSender struct {
-	SenderEmail string `json:"sender_email`
+	SenderEmail string `json:"sender_email"`
 }
 
 func processRegisterSender(awsContext *awsctx.AWSContext, request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
-	return events.APIGatewayProxyResponse{Body: string("register sender\n"), StatusCode: 200}, nil
+
+	fmt.Println("processRegisterSender")
+	var sender RegisterSender
+	err := json.Unmarshal([]byte(request.Body), &sender)
+	if err != nil {
+		return events.APIGatewayProxyResponse{Body: err.Error(), StatusCode: 400}, nil
+	}
+
+	fmt.Println("register sender", sender.SenderEmail)
+	verifyEmailIdentityIn := ses.VerifyEmailIdentityInput {
+		EmailAddress: aws.String(sender.SenderEmail),
+	}
+
+	_, err = awsContext.SESSvc.VerifyEmailIdentity(&verifyEmailIdentityIn)
+	if err != nil {
+		fmt.Println("Error registering sender", err.Error())
+		return events.APIGatewayProxyResponse{Body: err.Error(), StatusCode: 500}, nil
+	}
+
+	return events.APIGatewayProxyResponse{StatusCode: 200}, nil
 }
 
 func processRequest(awsContext *awsctx.AWSContext, request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
@@ -38,9 +59,9 @@ func main() {
 	var awsContext awsctx.AWSContext
 
 	sess := session.New()
-	svc := sns.New(sess)
+	svc := ses.New(sess)
 
-	awsContext.SNSSvc = svc
+	awsContext.SESSvc = svc
 	handler := makeHandler(&awsContext)
 	lambda.Start(handler)
 }
