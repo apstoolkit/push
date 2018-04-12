@@ -9,8 +9,20 @@ import (
 	"github.com/aws/aws-lambda-go/lambda"
 )
 
+type RegisterSender struct {
+	SenderEmail string `json:"sender_email`
+}
+
+func processRegisterSender(awsContext *awsctx.AWSContext, request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
+	return events.APIGatewayProxyResponse{Body: string("register sender\n"), StatusCode: 200}, nil
+}
+
 func processRequest(awsContext *awsctx.AWSContext, request events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
-	fmt.Println("processing email request")
+	fmt.Println("processing email request", request.Path)
+
+	if request.Path == "/push/api/v1/regsender" {
+		return processRegisterSender(awsContext, request)
+	}
 
 	return events.APIGatewayProxyResponse{Body: string("got it"), StatusCode: 200}, nil
 }

@@ -95,7 +95,11 @@ functions:
     handler: bin/ses
     events:
       - http:
-          path: push/api/v1/ses
+          path: push/api/v1/emailmessage
+          method: post
+          private: true
+      - http:
+          path: push/api/v1/regsender
           method: post
           private: true
 #          authorizer:
