@@ -1,0 +1,29 @@
+---
+swagger: "2.0"
+info:
+  version: "2018-04-12T01:45:01Z"
+  title: "dev-push"
+basePath: "/dev"
+schemes:
+- "https"
+paths:
+  /push/api/v1/emailmessage:
+    post:
+      responses: {}
+      security:
+      - api_key: []
+  /push/api/v1/regaddress:
+    post:
+      responses: {}
+      security:
+      - api_key: []
+  /push/api/v1/sms:
+    post:
+      responses: {}
+      security:
+      - api_key: []
+securityDefinitions:
+  api_key:
+    type: "apiKey"
+    name: "x-api-key"
+    in: "header"
